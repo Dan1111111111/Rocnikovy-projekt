@@ -1,1 +1,1 @@
-# Ročníkovy projekt
+# Ročníkový projekt
