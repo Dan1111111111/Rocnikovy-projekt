@@ -1,5 +1,5 @@
 # Ročníkový projekt
 #### -> Názov projektu: 
-  Najkratšia cesta v rovine z bodu A do bodu B
+    Najkratšia cesta v rovine z bodu A do bodu B
 #### -> Ciele projektu: 
-  Máme zadané dva body v rovine a niekoľko kružníc. Cieľom je nájsť najkratšiu cestu medzi týmito dvoma bodmi, ktorá neprechádza vnútrom kružníc.
+    Máme zadané dva body v rovine a niekoľko kružníc. Cieľom je nájsť najkratšiu cestu medzi týmito dvoma bodmi, ktorá neprechádza vnútrom kružníc.
