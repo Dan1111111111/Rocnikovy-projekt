@@ -378,27 +378,20 @@ int main()
 }
 
 /*
-Examples of inputs and outputs:
-
+Examples of inputs:
 1)
 0 0 10 0
 0
-
-10.00000
 
 2)
 0 0 10 0
 1
 5 0 2
 
-10.81122
-
 3)
 0 0 10 0
 1
 0 0 5
-
-Path between A and B does not exist.
 
 4)
 0 0 10 0
@@ -406,30 +399,22 @@ Path between A and B does not exist.
 3 0 2
 7 0 2
 
-11.39105
-
 5)
 0 0 10 0
 2
 3 0 3
 7 0 3
 
-13.42478
-
 6)
 0 0 10 10
 1
 5 5 3
-
-15.43514
 
 7)
 0 0 10 0
 2
 2 2 2
 8 2 2
-
-10.00000
 
 8)
 0 0 10 0
@@ -443,6 +428,5 @@ Path between A and B does not exist.
 0 -3 2
 -3 0 2
 
-Path between A and B does not exist.
  */
 
