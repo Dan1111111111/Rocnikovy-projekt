@@ -8,8 +8,8 @@
 
 using namespace std;
 
-static const long double EPS = 1e-12;
-static const long double INF = 1e18L;
+const long double EPS = 1e-12;
+const long double INF = 1e18L;
 
 struct Circle {
     long double x, y, r;
@@ -173,7 +173,7 @@ void add_edge(int u, int v, long double length, vector<vector<Edge> > &graph)
 
 void run_unit_tests();
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
     for (int i = 1; i < argc; i++)
     {
@@ -360,11 +360,11 @@ int main(int argc, char** argv)
     vector<bool> done(num_vertices, false);
     priority_queue<pair<long double,int>, vector<pair<long double,int> >, greater<pair<long double,int> > > pq;
     shortest_distance[0] = 0.0L;
-    pq.push(pair<long double,int>(0.0L, 0));
+    pq.push(pair<long double, int>(0.0L, 0));
 
     while (!pq.empty())
     {
-        pair<long double,int> current_pair = pq.top();
+        pair<long double, int> current_pair = pq.top();
         pq.pop();
         long double current_distance = current_pair.first;
         int current_vertex = current_pair.second;
@@ -399,9 +399,9 @@ int main(int argc, char** argv)
 
 // UNIT TESTY:
 
-void error(const string &msg)
+void error(const string &message)
 {
-    cout << "[ERROR] " << msg << "\n";
+    cout << "[ERROR] " << message << "\n";
 }
 
 #define ASSERT_NEAR(val, expected, eps) \
@@ -431,7 +431,7 @@ while(0)
 
 void test_header(const string &testName)
 {
-    cout << "⇨" << testName << "\n";
+    cout << " ⇨ " << testName << " ✔ \n";
 }
 
 void test_distance()
