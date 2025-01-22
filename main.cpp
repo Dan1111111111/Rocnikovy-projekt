@@ -399,7 +399,7 @@ int main(int argc, char** argv)
 
 // UNIT TESTY:
 
-static void error(const string &msg)
+void error(const string &msg)
 {
     cout << "[ERROR] " << msg << "\n";
 }
@@ -434,7 +434,7 @@ void test_header(const string &testName)
     cout << "⇨" << testName << "\n";
 }
 
-static void test_distance()
+void test_distance()
 {
     test_header("test_distance");
     Point p1;
@@ -448,7 +448,7 @@ static void test_distance()
     ASSERT_NEAR(distance(p1, p1), 0.0L, 1e-15);
 }
 
-static void test_inside_circle()
+void test_inside_circle()
 {
     test_header("test_inside_circle");
     Circle c1;
@@ -461,7 +461,7 @@ static void test_inside_circle()
     ASSERT_FALSE( inside_circle(3.0L, 0.0L, c1) );
 }
 
-static void test_segment_intersects_circle()
+void test_segment_intersects_circle()
 {
     test_header("test_segment_intersects_circle");
     Circle circle2;
@@ -480,7 +480,7 @@ static void test_segment_intersects_circle()
     ASSERT_FALSE( segment_intersects_circle(e, f, circle2) );
 }
 
-static void test_can_use_segment()
+void test_can_use_segment()
 {
     test_header("test_can_use_segment");
 
@@ -505,7 +505,7 @@ static void test_can_use_segment()
     ASSERT_FALSE( can_use_segment(p3, p4, circles) );
 }
 
-static void test_find_tangent_points()
+void test_find_tangent_points()
 {
     test_header("test_find_tangent_points");
 
@@ -527,7 +527,7 @@ static void test_find_tangent_points()
     }
 }
 
-static void test_can_use_arc()
+void test_can_use_arc()
 {
     test_header("test_can_use_arc");
 
