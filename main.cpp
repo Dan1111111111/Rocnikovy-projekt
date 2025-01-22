@@ -4,6 +4,7 @@
 #include <queue>
 #include <algorithm>
 #include <iomanip>
+#include <cstdlib>
 
 using namespace std;
 
@@ -157,14 +158,33 @@ bool can_use_arc(const Point &circle_center, long double R, long double start_an
     return true;
 }
 
-void add_edge(int u, int v, long double length, vector<vector<Edge>> &graph)
+void add_edge(int u, int v, long double length, vector<vector<Edge> > &graph)
 {
-    graph[u].push_back({v, length});
-    graph[v].push_back({u, length});
+    Edge e1;
+    e1.index = v;
+    e1.length = length;
+    graph[u].push_back(e1);
+
+    Edge e2;
+    e2.index = u;
+    e2.length = length;
+    graph[v].push_back(e2);
 }
 
-int main()
+void run_unit_tests();
+
+int main(int argc, char** argv)
 {
+    for (int i = 1; i < argc; i++)
+    {
+        string arg = argv[i];
+        if (arg == "-test")
+        {
+            run_unit_tests();
+            return 0;
+        }
+    }
+
     cin.tie(0)->sync_with_stdio(0);
 
     int N;
@@ -281,7 +301,7 @@ int main()
     }
 
     int num_vertices = vertices.size();
-    vector<vector<Edge>> graph(num_vertices);
+    vector<vector<Edge> > graph(num_vertices);
     for (int i = 0; i < num_vertices; i++)
     {
         for (int j = i + 1; j < num_vertices; j++)
@@ -338,9 +358,9 @@ int main()
 
     vector<long double> shortest_distance(num_vertices, INF);
     vector<bool> done(num_vertices, false);
-    priority_queue<pair<long double,int>, vector<pair<long double,int>>, greater<pair<long double,int>>> pq;
+    priority_queue<pair<long double,int>, vector<pair<long double,int> >, greater<pair<long double,int> > > pq;
     shortest_distance[0] = 0.0L;
-    pq.push({0.0L, 0});
+    pq.push(pair<long double,int>(0.0L, 0));
 
     while (!pq.empty())
     {
@@ -364,7 +384,7 @@ int main()
             if (new_distance + EPS < shortest_distance[neighbor])
             {
                 shortest_distance[neighbor] = new_distance;
-                pq.push({new_distance, neighbor});
+                pq.push(pair<long double, int>(new_distance, neighbor));
             }
         }
     }
@@ -377,21 +397,198 @@ int main()
     return 0;
 }
 
+// UNIT TESTY:
+
+static void error(const string &msg)
+{
+    cout << "[ERROR] " << msg << "\n";
+}
+
+#define ASSERT_NEAR(val, expected, eps) \
+do                                      \
+{                           \
+    long double diff = fabsl((long double)(val) - (long double)(expected));   \
+    if (diff > (eps))                                                  \
+        error("Value " + to_string((long double)(val)) + " != " + to_string((long double)(expected)) + " (diff=" + to_string((long double)(diff)) + "), EPS=" + #eps);    \
+}                                       \
+while(0)
+
+#define ASSERT_TRUE(cond) \
+do                        \
+{             \
+    if (!(cond))                         \
+        error("Condition failed: " #cond); \
+}                         \
+while(0)
+
+#define ASSERT_FALSE(cond) \
+do                         \
+{            \
+    if ((cond))                         \
+        error("Condition failed (expected false): " #cond);\
+}                          \
+while(0)
+
+void test_header(const string &testName)
+{
+    cout << "⇨" << testName << "\n";
+}
+
+static void test_distance()
+{
+    test_header("test_distance");
+    Point p1;
+    p1.x = 0.0L; p1.y = 0.0L; p1.circle_index = -1;
+    Point p2;
+    p2.x = 3.0L; p2.y = 4.0L; p2.circle_index = -1;
+
+    long double dist = distance(p1, p2);
+    ASSERT_NEAR(dist, 5.0L, 1e-15);
+
+    ASSERT_NEAR(distance(p1, p1), 0.0L, 1e-15);
+}
+
+static void test_inside_circle()
+{
+    test_header("test_inside_circle");
+    Circle c1;
+    c1.x = 0.0L; c1.y = 0.0L; c1.r = 2.0L;
+
+    ASSERT_TRUE( inside_circle(1.0L, 1.0L, c1) );
+
+    ASSERT_FALSE( inside_circle(2.0L, 0.0L, c1) );
+
+    ASSERT_FALSE( inside_circle(3.0L, 0.0L, c1) );
+}
+
+static void test_segment_intersects_circle()
+{
+    test_header("test_segment_intersects_circle");
+    Circle circle2;
+    circle2.x = 0.0L; circle2.y = 0.0L; circle2.r = 1.0L;
+
+    Point a; a.x = 2.0L; a.y = 0.0L; a.circle_index = -1;
+    Point b; b.x = -2.0L; b.y = 0.0L; b.circle_index = -1;
+    ASSERT_TRUE( segment_intersects_circle(a, b, circle2) );
+
+    Point c; c.x = 2.0L; c.y = 2.0L; c.circle_index = -1;
+    Point d; d.x = -2.0L; d.y = 2.0L; d.circle_index = -1;
+    ASSERT_FALSE( segment_intersects_circle(c, d, circle2) );
+
+    Point e; e.x = 1.1L; e.y = 1.1L; e.circle_index = -1;
+    Point f; f.x = 2.0L; f.y = 2.0L; f.circle_index = -1;
+    ASSERT_FALSE( segment_intersects_circle(e, f, circle2) );
+}
+
+static void test_can_use_segment()
+{
+    test_header("test_can_use_segment");
+
+    vector<Circle> circles;
+    {
+        Circle cA;
+        cA.x = 0.0L; cA.y = 0.0L; cA.r = 1.0L;
+        circles.push_back(cA);
+    }
+    {
+        Circle cB;
+        cB.x = 3.0L; cB.y = 3.0L; cB.r = 1.0L;
+        circles.push_back(cB);
+    }
+
+    Point p1; p1.x = 2.0L; p1.y = 0.0L; p1.circle_index = -1;
+    Point p2; p2.x = 4.0L; p2.y = 0.0L; p2.circle_index = -1;
+    ASSERT_TRUE( can_use_segment(p1, p2, circles) );
+
+    Point p3; p3.x = 2.0L; p3.y = 2.0L; p3.circle_index = -1;
+    Point p4; p4.x = 4.0L; p4.y = 4.0L; p4.circle_index = -1;
+    ASSERT_FALSE( can_use_segment(p3, p4, circles) );
+}
+
+static void test_find_tangent_points()
+{
+    test_header("test_find_tangent_points");
+
+    Circle c;
+    c.x = 0.0L; c.y = 0.0L; c.r = 1.0L;
+
+    Point p;
+    p.x = 3.0L; p.y = 0.0L; p.circle_index = -1;
+
+    vector<Point> tangents = find_tangent_points(p, 0, c);
+    ASSERT_TRUE(tangents.size() == 2);
+
+    for (size_t i = 0; i < tangents.size(); i++)
+    {
+        long double dx = tangents[i].x - c.x;
+        long double dy = tangents[i].y - c.y;
+        long double dist2 = dx * dx + dy * dy;
+        ASSERT_NEAR(dist2, 1.0L, 1e-10);
+    }
+}
+
+static void test_can_use_arc()
+{
+    test_header("test_can_use_arc");
+
+    Circle mainC;
+    mainC.x = 0.0L; mainC.y = 0.0L; mainC.r = 2.0L;
+
+    vector<Circle> circles;
+    {
+        Circle cX;
+        cX.x = 3.0L; cX.y = 0.0L; cX.r = 1.0L;
+        circles.push_back(cX);
+    }
+
+    Point center;
+    center.x = mainC.x;
+    center.y = mainC.y;
+    center.circle_index = -1;
+
+    long double R = mainC.r;
+
+    bool ok_arc_ccw = can_use_arc(center, R, 0.0L, (long double)M_PI/2.0L, true, circles);
+    ASSERT_TRUE(ok_arc_ccw);
+
+    bool ok_arc_ccw2 = can_use_arc(center, R, 0.0L, 0.3L, true, circles);
+    ASSERT_TRUE(ok_arc_ccw2);
+}
+
+void run_unit_tests()
+{
+    cout << "\nUNIT TESTY:\n";
+    test_distance();
+    test_inside_circle();
+    test_segment_intersects_circle();
+    test_can_use_segment();
+    test_find_tangent_points();
+    test_can_use_arc();
+    cout << "Vsetky testovacie funkcie boli vykonane. :)\n\n";
+}
+
 /*
-Examples of inputs:
+Examples of inputs and outputs:
+
 1)
 0 0 10 0
 0
+
+10.00000
 
 2)
 0 0 10 0
 1
 5 0 2
 
+10.81122
+
 3)
 0 0 10 0
 1
 0 0 5
+
+Path between A and B does not exist.
 
 4)
 0 0 10 0
@@ -399,22 +596,30 @@ Examples of inputs:
 3 0 2
 7 0 2
 
+11.39105
+
 5)
 0 0 10 0
 2
 3 0 3
 7 0 3
 
+13.42478
+
 6)
 0 0 10 10
 1
 5 5 3
+
+15.43514
 
 7)
 0 0 10 0
 2
 2 2 2
 8 2 2
+
+10.00000
 
 8)
 0 0 10 0
@@ -428,5 +633,6 @@ Examples of inputs:
 0 -3 2
 -3 0 2
 
+Path between A and B does not exist.
  */
 
