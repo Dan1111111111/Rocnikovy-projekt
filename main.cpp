@@ -429,9 +429,9 @@ do                         \
 }                          \
 while(0)
 
-void test_header(const string &testName)
+void test_header(const string &test_name)
 {
-    cout << " ⇨ " << testName << " ✔ \n";
+    cout << " ⇨ " << test_name << " ✔ \n";
 }
 
 void test_distance()
